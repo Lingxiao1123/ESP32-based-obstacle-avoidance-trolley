@@ -16,21 +16,113 @@ if not net.isconnected():
 print(net.ifconfig())
 
 html = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv = "Content-Type" content = "text/html;charset = UTF-8">
-        <title>GUIIII</title>
-    </head>
-    <body>
-        <h1>Current State: %s</h1>
-        <br><br>
-        <a href = "/Front""><button>Move Forward</button></a>
-        <a href = "/Back""><button>Move Backward</button></a>
-        <a href = "/Left""><button>Turn Left</button></a>
-        <a href = "/Right""><button>Turn Right</button></a>
-        <a href = "/STOP""><button>Stop </button></a>
-    </body>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>GUIIII</title>
+    <style>
+      body {
+        background-color: #222222;
+      }
+
+      .controller {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        gap: 10px;
+        justify-items: center;
+        align-items: center;
+        padding: 50px;
+        border: 5px solid white;
+        border-radius: 20px;
+      }
+
+      .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 80px;
+        height: 80px;
+        font-size: 20px;
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        border-radius: 50%;
+      }
+
+      .button:hover {
+        background-color: #3e8e41;
+      }
+
+      .button:active {
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+      }
+
+      .up {
+        grid-area: 1 / 2 / 2 / 3;
+      }
+
+      .down {
+        grid-area: 3 / 2 / 4 / 3;
+      }
+
+      .left {
+        grid-area: 2 / 1 / 3 / 2;
+      }
+
+      .right {
+        grid-area: 2 / 3 / 3 / 4;
+      }
+
+      .stop {
+        position: absolute;
+        top: 50%;
+        right: 50px;
+        transform: translateY(-50%);
+        width: 150px;
+        height: 150px;
+        font-size: 30px;
+        background-color: red;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 5px #666;
+      }
+
+      .stop:hover {
+        background-color: #cc0000;
+      }
+
+      .stop:active {
+        background-color: #990000;
+        box-shadow: 0 2px #666;
+        transform: translateY(-46%);
+      }
+    </style>
+  </head>
+  <body>
+    <h1 style="color: white">Current State: %s</h1>
+    <div class="controller">
+      <div></div>
+      <a href="/Back" class="button up"><span style="transform: rotate(180deg)">^</span></a>
+      <div></div>
+      <a href="/Left" class="button left"><span style="transform: rotate(-90deg)">^</span></a>
+      <a href="/STOP" class="button stop"><b>STOP</b></a>
+      <a href="/Right" class="button right"><span style="transform: rotate(90deg)">^</span></a>
+      <div></div>
+      <a href="/Front" class="button down"><span>v</span></a>
+      <div></div>
+    </div>
+  </body>
 </html>
+
 """
 #create socket object
 s = socket.socket()
