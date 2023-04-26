@@ -111,13 +111,13 @@ html = """<!DOCTYPE html>
     <h1 style="color: white">Current State: %s</h1>
     <div class="controller">
       <div></div>
-      <a href="/Back" class="button up"><span style="transform: rotate(180deg)">^</span></a>
+      <a href="/Front" class="button up"><span>^</span></a>
       <div></div>
       <a href="/Left" class="button left"><span style="transform: rotate(-90deg)">^</span></a>
       <a href="/STOP" class="button stop"><b>STOP</b></a>
       <a href="/Right" class="button right"><span style="transform: rotate(90deg)">^</span></a>
       <div></div>
-      <a href="/Front" class="button down"><span>v</span></a>
+      <a href="/Back" class="button down"><span style="transform: rotate(180deg)>^</span></a>
       <div></div>
     </div>
   </body>
