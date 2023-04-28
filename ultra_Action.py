@@ -1,67 +1,62 @@
+#import necessary module
 from ultraSound import ORGHCSR04_ULTR
-from time import sleep
 import wheelmotor
+#uasyncio asynchronous programming library
+#allow to run multitasing in one thead with coroutine
 import uasyncio
+import time
 
-async def read_ultr(ultr,delay):
-    x = []
-    y = []
+#coroutine function:
+async def read_ultr(ultr, delay):
     while True:
+        #To make sure it's real time progamming:
+        #I recorded the time stamps for the start and end of the mission
+        start_time = time.ticks_us()
         dist = ultr.start_scan()
         print("%s: %0.2f CM" % (ultr.name, dist))
         if ultr.name == 'Front' and dist < 20:
             wheelmotor.moveBack()
-            sleep(1.5)
+            await uasyncio.sleep(1.5)
             wheelmotor.stop()
         if ultr.name == 'Left' and dist < 20:
             wheelmotor.turnRight()
-            sleep(1.5)
+            await uasyncio.sleep(1.5)
             wheelmotor.stop()
         if ultr.name == 'Right' and dist < 20:
             wheelmotor.turnLeft()
-            sleep(1.5)
+            await uasyncio.sleep(1.5)
             wheelmotor.stop()
-        await uasyncio.sleep_ms(delay)
+        #elaspsed_time is the total time needed for run this function
+        elapsed_time = time.ticks_diff(time.ticks_us(), start_time)
+        #if elaspsed_time < delay : we wait for delay_elaspsed_time
+        #so that coroutine would be execurte with in delay time
+        if elapsed_time < delay:
+            await uasyncio.sleep_ms(delay - elapsed_time)
+        else:
+            await uasyncio.sleep_ms(0)
 
-def run_Ultr():
-    #front ultr
+#in main function, we generate thre Ultrasound object as three task
+async def main():
+    #front ultr 
     Ultr1 = ORGHCSR04_ULTR(25,26,"Front")
     #left ultr
     Ultr2 = ORGHCSR04_ULTR(4,36,"Left")
     #right ultr
-#     Ultr3 = ORGHCSR04_ULTR(23,34)
     Ultr3 = ORGHCSR04_ULTR(12,34,"Right")
-    
+    #Three corountine tasks with delay time
+    #Ultr1 waiting time 100ms , Ultr2 waiting time 200ms , Ultr3 waiting time 300ms
     tasks = [
-        read_ultr(Ultr1, 100),  # 每 100ms 读取一次前方超声波传感器的距离
-        read_ultr(Ultr2, 200),  # 每 200ms 读取一次左侧超声波传感器的距离
-        read_ultr(Ultr3, 300),  # 每 300ms 读取一次右侧超声波传感器的距离
+        read_ultr(Ultr1, 100), 
+        read_ultr(Ultr2, 200),  
+        read_ultr(Ultr3, 300),  
     ]
     
-    loop = uasyncio.get_event_loop()
-    loop.create_task(uasyncio.gather(*tasks))
-    loop.run_forever()
+    await uasyncio.gather(*tasks)
 
-#     while True:
-#     dist1 = Ultr1.start_scan()
-#     dist2 = Ultr2.start_scan()
-#     dist3 = Ultr3.start_scan()
-#         print("Front %0.2f CM" % dist1, "Left %0.2f CM" % dist2, "Right %0.2f CM" % dist3)
-# #         print("front Ultr is: %0.2f CM" % dist1)
-# #         print("left Ultr is: %0.2f CM" % dist2)
-# #         print("right Ultr is: %0.2f CM" % dist3)
-# #         print("=====================")
-#         if dist1 < 15:
-#             wheelmotor.moveBack()
-#             sleep(1.5)
-#             wheelmotor.stop()
-#         if dist2 < 15:
-#             wheelmotor.turnRight()
-#             sleep(1.5)
-#             wheelmotor.stop()
-#         if dist3 < 15:
-#             wheelmotor.turnLeft()
-#             sleep(1.5)
-#             wheelmotor.stop()
+#create event loop
+loop = uasyncio.get_event_loop()
+loop.create_task(main())
+loop.run_forever()
 
-run_Ultr()
+#run mian function
+main()
