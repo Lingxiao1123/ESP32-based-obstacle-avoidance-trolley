@@ -16,6 +16,10 @@ async def read_ultr(ultr, delay):
         print("%s: %0.2f CM" % (ultr.name, dist))
         if ultr.name == 'Front' and dist < 20:
             wheelmotor.moveBack()
+            #uasyncio.sleep(1.5) is an asynchronous function
+            #provided in the uasyncio library that suspends execution in a concurrent process,
+            #allowing the event loop to continue executing other concurrent processes,
+            #and then resumes execution of the concurrent process after a specified amount of time
             await uasyncio.sleep(1.5)
             wheelmotor.stop()
         if ultr.name == 'Left' and dist < 20:
@@ -44,11 +48,11 @@ async def main():
     #right ultr
     Ultr3 = ORGHCSR04_ULTR(12,34,"Right")
     #Three corountine tasks with delay time
-    #Ultr1 waiting time 100ms , Ultr2 waiting time 200ms , Ultr3 waiting time 300ms
+    #Ultr1 waiting time 50ms , Ultr2 waiting time 100ms , Ultr3 waiting time 150ms
     tasks = [
-        read_ultr(Ultr1, 100), 
-        read_ultr(Ultr2, 200),  
-        read_ultr(Ultr3, 300),  
+        read_ultr(Ultr1, 50), 
+        read_ultr(Ultr2, 100),  
+        read_ultr(Ultr3, 150),  
     ]
     
     await uasyncio.gather(*tasks)
